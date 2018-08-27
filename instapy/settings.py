@@ -21,22 +21,6 @@ class Settings:
     # TODO: Make it dynamic
     chromedriver_location = '/usr/local/share/chromedriver'
 
-    if os_env == 'osx':
-        chromedriver_location = os.path.join(
-            BASE_DIR, 'assets', 'chromedriver_osx')
-
-    if os_env == 'linux':
-        # TODO: Make it dynamic
-        chromedriver_location = '/usr/local/share/chromedriver'
-
-    if os_env == 'windows':
-        chromedriver_location = os.path.join(
-            BASE_DIR, 'assets', 'chromedriver_windows')
-
-    if not os.path.exists(chromedriver_location):
-        chromedriver_location = os.path.join(
-            BASE_DIR, 'assets', 'chromedriver')
-
     chromedriver_min_version = 2.36
     # Set a logger cache outside the InstaPy object to avoid re-instantiation issues
     loggers = {}
