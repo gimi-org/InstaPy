@@ -241,16 +241,16 @@ class InstaPy:
             # this setting can improve pageload & save bandwidth
             firefox_profile.set_preference('permissions.default.image', 2)
 
-            if self.proxy_address and self.proxy_port > 0:
+            if self.proxy_address and int(self.proxy_port) > 0:
                 firefox_profile.set_preference('network.proxy.type', 1)
                 firefox_profile.set_preference('network.proxy.http',
-                                               self.proxy_address)
+                                            self.proxy_address)
                 firefox_profile.set_preference('network.proxy.http_port',
-                                               self.proxy_port)
+                                            self.proxy_port)
                 firefox_profile.set_preference('network.proxy.ssl',
-                                               self.proxy_address)
+                                            self.proxy_address)
                 firefox_profile.set_preference('network.proxy.ssl_port',
-                                               self.proxy_port)
+                                            self.proxy_port)
 
             self.browser = webdriver.Firefox(firefox_profile=firefox_profile)
 
@@ -260,6 +260,7 @@ class InstaPy:
             #chrome_options.add_argument("--disable-infobars")
             chrome_options.add_argument("--mute-audio")
             chrome_options.add_argument('--dns-prefetch-disable')
+            #chrome_options.add_argument('--no-sandbox')
             chrome_options.add_argument('--lang=en-US')
             chrome_options.add_argument('--disable-setuid-sandbox')
 
@@ -267,14 +268,13 @@ class InstaPy:
             # GUI-less browser. chromedriver 2.9 and above required
             if self.headless_browser:
                 chrome_options.add_argument('--headless')
-                chrome_options.add_argument('--no-sandbox')
                 # Replaces browser User Agent from "HeadlessChrome".
                 user_agent = "Chrome"
                 chrome_options.add_argument('user-agent={user_agent}'
                                             .format(user_agent=user_agent))
             capabilities = DesiredCapabilities.CHROME
             # Proxy for chrome
-            if self.proxy_address and self.proxy_port > 0:
+            if self.proxy_address and int(self.proxy_port) > 0:
                 prox = Proxy()
                 proxy = ":".join([self.proxy_address, self.proxy_port])
                 prox.proxy_type = ProxyType.MANUAL
@@ -294,10 +294,17 @@ class InstaPy:
                 'intl.accept_languages': 'en-US'
             }
             chrome_options.add_experimental_option('prefs', chrome_prefs)
+            chrome_options.add_argument('--headless')
+            chrome_options.add_argument('--no-sandbox')
+            chrome_options.add_argument('--disable-dev-shm-usage')
+
             try:
-                self.browser = webdriver.Chrome(chromedriver_location,
-                                                desired_capabilities=capabilities,
-                                                chrome_options=chrome_options)
+
+                self.browser = webdriver.Chrome(chromedriver_location, chrome_options=chrome_options)
+
+                # self.browser = webdriver.Chrome(chromedriver_location,
+                #                                 desired_capabilities=capabilities,
+                #                                 chrome_options=chrome_options)
             except selenium.common.exceptions.WebDriverException as exc:
                 self.logger.exception(exc)
                 raise InstaPyError('ensure chromedriver is installed at {}'.format(
@@ -305,7 +312,7 @@ class InstaPy:
 
             # prevent: Message: unknown error: call function result missing 'value'
             matches = re.match(r'^(\d+\.\d+)',
-                               self.browser.capabilities['chrome']['chromedriverVersion'])
+                            self.browser.capabilities['chrome']['chromedriverVersion'])
             if float(matches.groups()[0]) < Settings.chromedriver_min_version:
                 raise InstaPyError('chromedriver {} is not supported, expects {}+'.format(
                     float(matches.groups()[0]), Settings.chromedriver_min_version))
