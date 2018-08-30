@@ -313,7 +313,7 @@ class InstaPy:
                 #                                 desired_capabilities=capabilities,
                 #                                 chrome_options=chrome_options)
             except selenium.common.exceptions.WebDriverException as exc:
-                self.logger.exception(exc)
+                self.logger.warn(str(exc))
                 raise InstaPyError('ensure chromedriver is installed at {}'.format(
                     Settings.chromedriver_location))
 
