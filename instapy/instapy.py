@@ -5,12 +5,11 @@ import logging
 import os
 import random
 import re
+import requests
+import selenium
 from datetime import datetime
 from math import ceil
 from platform import python_version
-
-import requests
-import selenium
 from pyvirtualdisplay import Display
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, WebDriverException
@@ -218,8 +217,9 @@ class InstaPy:
                 console_handler.setFormatter(logger_formatter)
 
                 # TODO: move into settings or SSM parameters store
-                slack_handler = SlackerLogHandler('xoxp-14166379184-40752829938-43520501684-dd46ea8f99', '#gimi-liker-bot',
-                                                  stack_trace=True)
+                slack_handler = SlackerLogHandler(
+                    'xoxp-14166379184-40752829938-43520501684-dd46ea8f99', '#magnum-log', stack_trace=True
+                )
                 slack_handler.setLevel(logging.INFO)
 
                 logger.addHandler(console_handler)
